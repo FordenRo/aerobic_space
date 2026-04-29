@@ -17,7 +17,7 @@ class _LoadingPageState extends State<LoadingPage>
   late Animation<double> scaleAnimation;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
 
     controller = AnimationController(
@@ -39,12 +39,10 @@ class _LoadingPageState extends State<LoadingPage>
       ),
     );
 
-    controller.forward();
-
-    widget.future.whenComplete(() async {
-      await controller.animateBack(0);
-      widget.onFinish();
-    });
+    await controller.forward();
+    await widget.future;
+    await controller.animateBack(0);
+    widget.onFinish();
   }
 
   @override
@@ -56,7 +54,6 @@ class _LoadingPageState extends State<LoadingPage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -67,31 +64,12 @@ class _LoadingPageState extends State<LoadingPage>
             child: Column(
               mainAxisAlignment: .center,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: .1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.fitness_center, // Или ваш кастомный логотип
-                    size: 64,
-                    color: theme.colorScheme.primary,
-                  ),
+                SizedBox(
+                  width: 400,
+                  child: Image.asset('assets/logo_title.png'),
                 ),
 
                 const SizedBox(height: 24),
-
-                Text(
-                  'Aerobic.Space',
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
 
                 Text(
                   'Система анализа судейства',

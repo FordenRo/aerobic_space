@@ -1,5 +1,9 @@
 enum AssessmentCategoryType { artistic, execution }
 
+mixin WithId {
+  int get id;
+}
+
 class Referee {
   final int id;
   final String fio;
@@ -106,3 +110,7 @@ Iterable<Assessment> loadAssessments(String data) => data.split('\n').map((e) {
     index: int.parse(index),
   );
 });
+
+late List<Assessment> cachedAssessments;
+late List<Referee> cachedReferees;
+late List<Performance> cachedPerformances;

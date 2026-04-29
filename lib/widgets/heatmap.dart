@@ -7,11 +7,11 @@ class JudgeRegionHeatmap extends StatelessWidget {
   data; // [Judge][Region] = Value (e.g., Avg Score)
 
   const JudgeRegionHeatmap({
-    Key? key,
+    super.key,
     required this.judges,
     required this.regions,
     required this.data,
-  }) : super(key: key);
+  });
 
   // Функция для получения цвета в зависимости от значения (градиент)
   Color _getColor(double value, double min, double max) {
