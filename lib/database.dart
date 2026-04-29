@@ -1,5 +1,3 @@
-enum Country { russia, region }
-
 enum AssessmentCategoryType { artistic, execution }
 
 class Referee {
@@ -20,12 +18,10 @@ class Performance {
   final int id;
   final String region;
   final String city;
-  final Country country; // competitionType
+  final String country; // competitionType
   final String title; // competition
   final String ageCategory;
   final String discipline;
-  final double assessment;
-  final Map<Referee, double> assessments;
 
   Performance({
     required this.id,
@@ -35,24 +31,22 @@ class Performance {
     required this.ageCategory,
     required this.discipline,
     required this.country,
-    required this.assessment,
-    required this.assessments,
   });
 }
 
 class Assessment {
   final int id;
   final double value; // assessment
-  final Referee referee;
-  final Performance performance;
-  final AssessmentCategory category; // type
+  final int refereeId;
+  final int performanceId;
+  final String category; // type
   final int index;
 
   Assessment({
     required this.id,
     required this.value,
-    required this.referee,
-    required this.performance,
+    required this.refereeId,
+    required this.performanceId,
     required this.category,
     required this.index,
   }); // number
@@ -69,3 +63,46 @@ class AssessmentCategory {
     required this.performance,
   });
 }
+
+Iterable<Referee> loadReferees(String data) => data.split('\n').map((e) {
+  final [id, fio, region, city] = e.split(',');
+  return Referee(id: int.parse(id), fio: fio, region: region, city: city);
+});
+
+Iterable<Performance> loadPerformances(String data) =>
+    data.split('\n').map((e) {
+      final [id, region, city, country, title, ageCategory, discipline] = e
+          .split(',');
+      return Performance(
+        id: int.parse(id),
+        region: region,
+        city: city,
+        title: title,
+        ageCategory: ageCategory,
+        discipline: discipline,
+        country: country,
+      );
+    });
+
+Iterable<Assessment> loadAssessments(String data) => data.split('\n').map((e) {
+  final [
+    id,
+    refereeId,
+    performanceId,
+    category,
+    index,
+    value,
+    categoryResult,
+    performanceResult,
+  ] = e.split(
+    ',',
+  );
+  return Assessment(
+    id: int.parse(id),
+    value: double.parse(value),
+    refereeId: int.parse(refereeId),
+    performanceId: int.parse(performanceId),
+    category: category,
+    index: int.parse(index),
+  );
+});

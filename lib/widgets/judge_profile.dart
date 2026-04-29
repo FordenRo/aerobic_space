@@ -1,311 +1,296 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-class Assessment {
-  final String refereeId;
-  final String performanceId;
-  final double score;
-  final double finalScore;
+// class JudgeProfileData {
+//   final String fio;
+//   final double biasIndex;
+//   final double accuracyScore;
 
-  Assessment({
-    required this.refereeId,
-    required this.performanceId,
-    required this.score,
-    required this.finalScore,
-  });
-}
+//   JudgeProfileData({
+//     required this.fio,
+//     required this.biasIndex,
+//     required this.accuracyScore,
+//   });
+// }
 
-class Performance {
-  final String id;
-  final String region;
+// double getAllowableDeviation(double score) {
+//   if (score >= 8.0) return 0.3;
+//   if (score >= 7.0) return 0.4;
+//   if (score >= 6.0) return 0.5;
+//   return 0.6;
+// }
 
-  Performance({required this.id, required this.region});
-}
+// String getAccuracyCategory(double deviation, double allowable) {
+//   if (deviation == 0) return "В яблочко";
+//   if (deviation <= allowable) return "Допустимое";
+//   return "Серьезное";
+// }
 
-class JudgeProfileData {
-  final String fio;
-  final double biasIndex;
-  final double accuracyScore;
+// void test() {}
 
-  JudgeProfileData({
-    required this.fio,
-    required this.biasIndex,
-    required this.accuracyScore,
-  });
-}
+// JudgeProfileData calculateJudgeMetrics(
+//   String judgeId,
+//   List<Assessment> assessments,
+//   List<Performance> performances,
+// ) {
+//   final perfMap = {for (var p in performances) p.id: p};
 
-double getAllowableDeviation(double score) {
-  if (score >= 8.0) return 0.3;
-  if (score >= 7.0) return 0.4;
-  if (score >= 6.0) return 0.5;
-  return 0.6;
-}
+//   final myAssessments = assessments
+//       .where((a) => a.refereeId == judgeId)
+//       .toList();
 
-String getAccuracyCategory(double deviation, double allowable) {
-  if (deviation == 0) return "В яблочко";
-  if (deviation <= allowable) return "Допустимое";
-  return "Серьезное";
-}
+//   if (myAssessments.isEmpty) {
+//     return JudgeProfileData(fio: "Unknown", biasIndex: 0, accuracyScore: 0);
+//   }
 
-JudgeProfileData calculateJudgeMetrics(
-  String judgeId,
-  List<Assessment> assessments,
-  List<Performance> performances,
-) {
-  final perfMap = {for (var p in performances) p.id: p};
+//   int accurateCount = 0;
+//   for (var assess in myAssessments) {
+//     double deviation = (assess.score - assess.finalScore).abs();
+//     double allowable = getAllowableDeviation(
+//       assess.finalScore,
+//     ); // Или assess.score, зависит от методологии, обычно от итоговой
+//     if (deviation <= allowable) accurateCount++;
+//   }
+//   double accuracyPercent = (accurateCount / myAssessments.length) * 100;
 
-  final myAssessments = assessments
-      .where((a) => a.refereeId == judgeId)
-      .toList();
+//   double sumDeviationOwn = 0;
+//   int countOwn = 0;
+//   double sumDeviationOther = 0;
+//   int countOther = 0;
 
-  if (myAssessments.isEmpty) {
-    return JudgeProfileData(fio: "Unknown", biasIndex: 0, accuracyScore: 0);
-  }
+//   for (var assess in myAssessments) {
+//     final perf = perfMap[assess.performanceId];
+//     if (perf == null) continue;
 
-  int accurateCount = 0;
-  for (var assess in myAssessments) {
-    double deviation = (assess.score - assess.finalScore).abs();
-    double allowable = getAllowableDeviation(
-      assess.finalScore,
-    ); // Или assess.score, зависит от методологии, обычно от итоговой
-    if (deviation <= allowable) accurateCount++;
-  }
-  double accuracyPercent = (accurateCount / myAssessments.length) * 100;
+//     bool isOwn = false;
 
-  double sumDeviationOwn = 0;
-  int countOwn = 0;
-  double sumDeviationOther = 0;
-  int countOther = 0;
+//     double dev = (assess.score - assess.finalScore).abs();
 
-  for (var assess in myAssessments) {
-    final perf = perfMap[assess.performanceId];
-    if (perf == null) continue;
+//     if (isOwn) {
+//       sumDeviationOwn += dev;
+//       countOwn++;
+//     } else {
+//       sumDeviationOther += dev;
+//       countOther++;
+//     }
+//   }
 
-    bool isOwn = false;
+//   double avgDevOther = countOther > 0 ? sumDeviationOther / countOther : 0;
+//   double avgDevOwn = countOwn > 0 ? sumDeviationOwn / countOwn : 0;
 
-    double dev = (assess.score - assess.finalScore).abs();
+//   double biasIndex = avgDevOther - avgDevOwn;
 
-    if (isOwn) {
-      sumDeviationOwn += dev;
-      countOwn++;
-    } else {
-      sumDeviationOther += dev;
-      countOther++;
-    }
-  }
+//   return JudgeProfileData(
+//     fio: "Иванов И.И.",
+//     biasIndex: biasIndex,
+//     accuracyScore: accuracyPercent,
+//   );
+// }
 
-  double avgDevOther = countOther > 0 ? sumDeviationOther / countOther : 0;
-  double avgDevOwn = countOwn > 0 ? sumDeviationOwn / countOwn : 0;
+// class JudgeProfileWidget extends StatelessWidget {
+//   final JudgeProfileData data;
+//   final VoidCallback? onBack;
 
-  double biasIndex = avgDevOther - avgDevOwn;
+//   const JudgeProfileWidget({super.key, required this.data, this.onBack});
 
-  return JudgeProfileData(
-    fio: "Иванов И.И.",
-    biasIndex: biasIndex,
-    accuracyScore: accuracyPercent,
-  );
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
 
-class JudgeProfileWidget extends StatelessWidget {
-  final JudgeProfileData data;
-  final VoidCallback? onBack;
+//     return Container(
+//       padding: const EdgeInsets.all(24),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: .circular(20),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withValues(alpha: .05),
+//             blurRadius: 15,
+//             offset: const Offset(0, 5),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: .start,
+//         children: [
+//           Row(
+//             children: [
+//               if (onBack != null)
+//                 IconButton(
+//                   icon: const Icon(Icons.arrow_back_ios_new),
+//                   onPressed: onBack,
+//                 ),
+//               CircleAvatar(
+//                 radius: 30,
+//                 backgroundColor: theme.colorScheme.primaryContainer,
+//                 child: Text(
+//                   data.fio.isNotEmpty ? data.fio[0] : 'J',
+//                   style: TextStyle(
+//                     fontSize: 24,
+//                     color: theme.colorScheme.onPrimaryContainer,
+//                     fontWeight: .bold,
+//                   ),
+//                 ),
+//               ),
+//               const SizedBox(width: 16),
+//               Expanded(
+//                 child: Column(
+//                   crossAxisAlignment: .start,
+//                   children: [
+//                     Text(
+//                       data.fio,
+//                       style: theme.textTheme.headlineSmall?.copyWith(
+//                         fontWeight: .bold,
+//                       ),
+//                     ),
+//                     Text(
+//                       'Судья исполнения / Артистизма',
+//                       style: theme.textTheme.bodyMedium?.copyWith(
+//                         color: Colors.grey.shade600,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(height: 32),
+//           Row(
+//             children: [
+//               Expanded(
+//                 child: _metricCard(
+//                   context,
+//                   title: 'Точность оценок',
+//                   value: '${data.accuracyScore.toStringAsFixed(1)}%',
+//                   subtitle: _getAccuracyLabel(data.accuracyScore),
+//                   color: _getAccuracyColor(data.accuracyScore),
+//                   icon: Icons.assignment_rounded,
+//                 ),
+//               ),
+//               const SizedBox(width: 16),
+//               Expanded(
+//                 child: _metricCard(
+//                   context,
+//                   title: 'Индекс предвзятости',
+//                   value:
+//                       '${data.biasIndex.isNegative ? '' : '+'}${data.biasIndex.toStringAsFixed(2)}',
+//                   subtitle: _getBiasLabel(data.biasIndex),
+//                   color: _getBiasColor(data.biasIndex),
+//                   icon: Icons.balance,
+//                 ),
+//               ),
+//             ],
+//           ),
 
-  const JudgeProfileWidget({super.key, required this.data, this.onBack});
+//           const SizedBox(height: 32),
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+//           Divider(color: Colors.grey.shade200),
 
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (onBack != null)
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new),
-                  onPressed: onBack,
-                ),
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: theme.colorScheme.primaryContainer,
-                child: Text(
-                  data.fio.isNotEmpty ? data.fio[0] : 'J',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: theme.colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.fio,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'Судья исполнения / Артистизма', // Тип можно передавать динамически
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Row(
-            children: [
-              Expanded(
-                child: _buildMetricCard(
-                  context,
-                  title: 'Точность оценок',
-                  value: '${data.accuracyScore.toStringAsFixed(1)}%',
-                  subtitle: _getAccuracyLabel(data.accuracyScore),
-                  color: _getAccuracyColor(data.accuracyScore),
-                  icon: Icons.assignment_rounded,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildMetricCard(
-                  context,
-                  title: 'Индекс предвзятости',
-                  value:
-                      '${data.biasIndex.isNegative ? '' : '+'}${data.biasIndex.toStringAsFixed(2)}',
-                  subtitle: _getBiasLabel(data.biasIndex),
-                  color: _getBiasColor(data.biasIndex),
-                  icon: Icons.balance,
-                ),
-              ),
-            ],
-          ),
+//           const SizedBox(height: 16),
 
-          const SizedBox(height: 32),
+//           Text(
+//             'Детальная статистика',
+//             style: theme.textTheme.titleLarge?.copyWith(
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
 
-          Divider(color: Colors.grey.shade200),
+//           const SizedBox(height: 16),
 
-          const SizedBox(height: 16),
+//           Container(
+//             height: 200,
+//             decoration: BoxDecoration(
+//               color: Colors.grey.shade50,
+//               borderRadius: BorderRadius.circular(12),
+//             ),
+//             child: Center(
+//               child: Text(
+//                 'График отклонений по выступлениям',
+//                 style: TextStyle(color: Colors.grey.shade400),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 
-          Text(
-            'Детальная статистика',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+//   Widget _metricCard(
+//     BuildContext context, {
+//     required String title,
+//     required String value,
+//     required String subtitle,
+//     required Color color,
+//     required IconData icon,
+//   }) {
+//     var textTheme = Theme.of(context).textTheme;
 
-          const SizedBox(height: 16),
+//     return Container(
+//       padding: const EdgeInsets.all(20),
+//       decoration: BoxDecoration(
+//         color: color.withValues(alpha: .1),
+//         borderRadius: BorderRadius.circular(16),
+//         border: .all(color: color.withValues(alpha: .3)),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Icon(icon, color: color, size: 24),
+//               Text(
+//                 value,
+//                 style: textTheme.headlineMedium?.copyWith(
+//                   fontWeight: FontWeight.bold,
+//                   color: color,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(height: 8),
+//           Text(
+//             title,
+//             style: textTheme.titleSmall?.copyWith(
+//               color: Colors.grey.shade700,
+//               fontWeight: FontWeight.w600,
+//             ),
+//           ),
+//           const SizedBox(height: 4),
+//           Text(
+//             subtitle,
+//             style: textTheme.bodySmall?.copyWith(
+//               color: color,
+//               fontWeight: FontWeight.w500,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                'График отклонений по выступлениям',
-                style: TextStyle(color: Colors.grey.shade400),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+//   Color _getAccuracyColor(double percent) {
+//     if (percent >= 90) return Colors.green;
+//     if (percent >= 70) return Colors.orange;
+//     return Colors.red;
+//   }
 
-  Widget _buildMetricCard(
-    BuildContext context, {
-    required String title,
-    required String value,
-    required String subtitle,
-    required Color color,
-    required IconData icon,
-  }) => Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: color.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(16),
-      border: .all(color: color.withOpacity(0.3)),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(icon, color: color, size: 24),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            color: Colors.grey.shade700,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          subtitle,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: color,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    ),
-  );
+//   String _getAccuracyLabel(double percent) {
+//     if (percent >= 90) return 'Высокая точность';
+//     if (percent >= 70) return 'Средняя точность';
+//     return 'Низкая точность';
+//   }
 
-  Color _getAccuracyColor(double percent) {
-    if (percent >= 90) return Colors.green;
-    if (percent >= 70) return Colors.orange;
-    return Colors.red;
-  }
+//   Color _getBiasColor(double index) {
+//     double absBias = index.abs();
+//     if (absBias < 0.1) return Colors.green;
+//     if (absBias < 0.5) return Colors.orange;
+//     return Colors.red;
+//   }
 
-  String _getAccuracyLabel(double percent) {
-    if (percent >= 90) return 'Высокая точность';
-    if (percent >= 70) return 'Средняя точность';
-    return 'Низкая точность';
-  }
-
-  Color _getBiasColor(double index) {
-    double absBias = index.abs();
-    if (absBias < 0.1) return Colors.green;
-    if (absBias < 0.5) return Colors.orange;
-    return Colors.red;
-  }
-
-  String _getBiasLabel(double index) {
-    if (index.abs() < 0.1) return 'Объективен';
-    if (index > 0.5) return 'Лоялен к "своим"';
-    if (index < -0.5) return 'Строг к "своим"';
-    return 'Нейтрален';
-  }
-}
+//   String _getBiasLabel(double index) {
+//     if (index.abs() < 0.1) return 'Объективен';
+//     if (index > 0.5) return 'Лоялен к "своим"';
+//     if (index < -0.5) return 'Строг к "своим"';
+//     return 'Нейтрален';
+//   }
+// }

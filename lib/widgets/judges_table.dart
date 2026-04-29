@@ -21,7 +21,6 @@ class _JudgesTableState extends State<JudgesTable> {
     super.dispose();
   }
 
-  // Фильтрация списка
   List<Referee> get _filteredJudges {
     if (_searchQuery.isEmpty) {
       return widget.judges;
@@ -39,7 +38,6 @@ class _JudgesTableState extends State<JudgesTable> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // --- Блок поиска ---
         Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -49,7 +47,7 @@ class _JudgesTableState extends State<JudgesTable> {
             border: Border.all(color: Colors.grey.shade300),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.03),
+                color: Colors.black.withValues(alpha: .03),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -87,7 +85,6 @@ class _JudgesTableState extends State<JudgesTable> {
           ),
         ),
 
-        // --- Таблица (используем логику из предыдущего ответа) ---
         Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -95,7 +92,7 @@ class _JudgesTableState extends State<JudgesTable> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: .05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -103,7 +100,6 @@ class _JudgesTableState extends State<JudgesTable> {
             ),
             child: Column(
               children: [
-                // Заголовок таблицы
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
@@ -134,7 +130,6 @@ class _JudgesTableState extends State<JudgesTable> {
                   ),
                 ),
 
-                // Данные
                 Expanded(
                   child: _filteredJudges.isEmpty
                       ? Center(
@@ -220,7 +215,6 @@ class _JudgesTableState extends State<JudgesTable> {
           ),
         ),
 
-        // Инфо о количестве найденных записей (опционально)
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Text(
